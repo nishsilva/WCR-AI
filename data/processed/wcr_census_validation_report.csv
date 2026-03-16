@@ -1,0 +1,21 @@
+metric,value
+n_rows,961
+n_unique_ring_id,957
+n_duplicate_rows_by_ring_id,8
+n_duplicate_ring_ids,4
+n_missing_date_first_seen,0
+n_missing_date_last_seen,1
+n_missing_lat_birth,0
+n_missing_lon_birth,0
+n_missing_lat_death,6
+n_missing_lon_death,6
+n_missing_area_km2,0
+n_negative_lifetime,0
+birth_date_min,1980-03-04 00:00:00
+birth_date_max,2017-12-13 00:00:00
+death_date_min,1980-04-29 00:00:00
+death_date_max,2018-04-23 00:00:00
+area_km2_min,1581.87
+area_km2_max,251327.41
+lifetime_days_min,7.0
+lifetime_days_max,465.0

@@ -1,0 +1,68 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Packaging / build
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Tool caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Streamlit
+.streamlit/secrets.toml
+.streamlit/config.toml
+
+# Environment files
+.env
+.env.*
+
+# Logs
+*.log
+logs/
+
+# Local data artifacts
+!data/processed/wcr_census.parquet
+!data/processed/wcr_census_clean.csv
+!data/processed/wcr_census_validation_report.csv
+
+# Optional: ignore raw data if you do not want to commit it
+# data/raw/*
+# !data/raw/.gitkeep
+
+# Reference data generated locally
+# data/reference/*
+# !data/reference/.gitkeep
+
+# Temporary outputs
+artifacts/
+tmp/
+temp/
+
+# API / server runtime files
+*.pid
+
+# Mac metadata in nested folders
+**/.DS_Store
