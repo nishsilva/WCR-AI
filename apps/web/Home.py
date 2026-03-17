@@ -28,6 +28,15 @@ st.set_page_config(
 st.title("🌊 AI-powered WCR Explorer")
 st.caption("Warm Core Ring census exploration and analysis workspace assisted by an LLM agent.")
 
+st.markdown(
+    """
+**Warm Core Rings (WCRs)** are coherent clockwise rotating ocean eddies that pinches off from the Gulf Stream. They are characterized by warm water at their center. 
+They play an important role in ocean circulation and heat transport.
+"""
+)
+
+st.divider()
+
 
 @st.cache_data(show_spinner=False)
 def load_data() -> pd.DataFrame:
@@ -51,7 +60,8 @@ except Exception as exc:
 
 st.markdown(
     """
-This app is built around a **WCR census dataset** where each row represents one warm core ring record with:
+This app is based on a WCR census dataset that has been created by digitizing physical Gulf Stream Charts and recording the birth and demise characteristics of individual WCRs from 1980 to 2017.
+Where each row represents one warm core ring record with:
 
 - birth date and birth location
 - absorption date and demise location
@@ -84,7 +94,7 @@ st.divider()
 left, right = st.columns([1.15, 1])
 
 with left:
-    st.subheader("Available pages")
+    st.subheader("Application Capabilities")
 
     st.markdown(
         """
@@ -144,3 +154,17 @@ st.markdown(
 
 with st.expander("Full dataset summary"):
     st.json(summary)
+
+st.divider()
+
+st.subheader("Dataset Citation")
+st.markdown(
+    """
+Gangopadhyay, A., Gawarkiewicz, G. (2020). Yearly census of Gulf Stream Warm Core Ring formation from 1980 to 2017. 
+Biological and Chemical Oceanography Data Management Office (BCO-DMO). (Version 1) Version Date 2020-05-06. 
+https://doi.org/10.26008/1912/bco-dmo.810182.1
+"""
+)
+
+st.divider()
+st.caption("Created by Nish Etige, Ph.D. | [Homepage](https://www.imnish.org) | [Email](mailto:your.nishetige@gmail.com) | [GitHub](https://github.com/nishsilva)")
