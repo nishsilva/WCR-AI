@@ -25,7 +25,7 @@ st.set_page_config(
     layout="wide",
 )
 
-st.title("🌊 AI-powered WCR Explorer")
+st.title("🌊 AI-Powered WCR Explorer")
 st.caption("Warm Core Ring census exploration and analysis workspace assisted by an LLM agent.")
 
 st.markdown(
