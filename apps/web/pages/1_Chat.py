@@ -54,7 +54,6 @@ if "messages" not in st.session_state:
             "role": "assistant",
             "content": (
                 "Ask a question about the WCR census dataset. "
-                "This chat now routes requests through the orchestrator and tool registry."
             ),
         }
     ]
