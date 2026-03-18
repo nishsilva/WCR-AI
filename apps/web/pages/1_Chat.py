@@ -181,13 +181,13 @@ if user_prompt:
             st.caption(result.note)
 
         if result.figure is not None:
-            st.plotly_chart(result.figure, use_container_width=True)
+            st.plotly_chart(result.figure, width="stretch")
 
         if result.extra_figure is not None:
-            st.plotly_chart(result.extra_figure, use_container_width=True)
+            st.plotly_chart(result.extra_figure, width="stretch")
 
         if result.table is not None:
-            st.dataframe(result.table, use_container_width=True, hide_index=True)
+            st.dataframe(result.table, width="stretch", hide_index=True)
 
         if result.data is not None:
             result_df = result.data
@@ -195,7 +195,7 @@ if user_prompt:
 
             preview_df = build_preview_df(result_df)
             with st.expander("Preview matched rows"):
-                st.dataframe(preview_df, use_container_width=True, hide_index=True)
+                st.dataframe(preview_df, width="stretch", hide_index=True)
 
             csv_bytes = result_df.to_csv(index=False).encode("utf-8")
             st.download_button(

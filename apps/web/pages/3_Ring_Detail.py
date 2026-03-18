@@ -252,7 +252,7 @@ with tab1:
     display_df = selected_df[selected_cols].copy() if selected_cols else selected_df.copy()
     display_df = format_dates_for_display(display_df)
 
-    st.dataframe(display_df, use_container_width=True, hide_index=True)
+    st.dataframe(display_df, width="stretch", hide_index=True)
 
     if is_duplicate_group:
         st.markdown("### Fields that differ across rows")
@@ -260,7 +260,7 @@ with tab1:
         if diff_df.empty:
             st.info("No differing non-null fields detected across duplicate rows.")
         else:
-            st.dataframe(diff_df, use_container_width=True, hide_index=True)
+            st.dataframe(diff_df, width="stretch", hide_index=True)
 
 # -----------------------------------------------------------------------------
 # Maps
@@ -291,7 +291,7 @@ with tab2:
                 max_segments=len(selected_df),
             )
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
     except Exception as exc:
         st.error(f"Could not render map: {exc}")
 
@@ -319,7 +319,7 @@ with tab3:
             )
 
         summary_df = pd.DataFrame(summary_rows)
-        st.dataframe(summary_df, use_container_width=True, hide_index=True)
+        st.dataframe(summary_df, width="stretch", hide_index=True)
 
     if len(selected_df) >= 2 and "lifetime_days" in selected_df.columns:
         try:
@@ -330,7 +330,7 @@ with tab3:
                 nbins=min(10, max(5, len(selected_df))),
                 title=f"Lifetime distribution: {page_title_value}",
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
         except Exception:
             pass
 
@@ -342,7 +342,7 @@ with tab3:
                 column="area_km2",
                 title=f"Area boxplot: {page_title_value}",
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
         except Exception:
             pass
 
@@ -369,4 +369,4 @@ with tab4:
     )
 
     st.markdown("### Quick preview")
-    st.dataframe(download_df, use_container_width=True, hide_index=True)
+    st.dataframe(download_df, width="stretch", hide_index=True)

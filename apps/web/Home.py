@@ -135,7 +135,7 @@ with right:
         if col in preview_df.columns:
             preview_df[col] = pd.to_datetime(preview_df[col], errors="coerce").dt.strftime("%Y-%m-%d")
 
-    st.dataframe(preview_df, use_container_width=True, hide_index=True)
+    st.dataframe(preview_df, width="stretch", hide_index=True)
 
 st.divider()
 

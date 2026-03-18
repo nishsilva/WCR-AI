@@ -423,7 +423,7 @@ with tab1:
                 title=f"Birth Locations Sized by Displacement (n={len(map_df):,})",
             )
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
     except Exception as exc:
         st.error(f"Could not render map: {exc}")
 
@@ -457,7 +457,7 @@ with tab2:
                 nbins=nbins,
                 title=f"{variable} distribution",
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
         except Exception as exc:
             st.error(f"Could not render histogram: {exc}")
     else:
@@ -467,7 +467,7 @@ with tab2:
                 column=variable,
                 title=f"{variable} boxplot",
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
         except Exception as exc:
             st.error(f"Could not render boxplot: {exc}")
 
@@ -521,8 +521,8 @@ with tab3:
                     count_column="count",
                     title="Birth counts by year",
                 )
-            st.plotly_chart(fig, use_container_width=True)
-            st.dataframe(counts_df, use_container_width=True, hide_index=True)
+            st.plotly_chart(fig, width="stretch")
+            st.dataframe(counts_df, width="stretch", hide_index=True)
 
         elif count_mode == "Death counts":
             counts_df = death_yearly_counts(filtered)
@@ -541,14 +541,14 @@ with tab3:
                     count_column="count",
                     title="Absorption counts by year",
                 )
-            st.plotly_chart(fig, use_container_width=True)
-            st.dataframe(counts_df, use_container_width=True, hide_index=True)
+            st.plotly_chart(fig, width="stretch")
+            st.dataframe(counts_df, width="stretch", hide_index=True)
 
         else:
             compare_df = compare_birth_vs_death_yearly_counts(filtered)
             fig = plot_birth_vs_death_counts(compare_df, title="Birth vs absorption counts by year")
-            st.plotly_chart(fig, use_container_width=True)
-            st.dataframe(compare_df, use_container_width=True, hide_index=True)
+            st.plotly_chart(fig, width="stretch")
+            st.dataframe(compare_df, width="stretch", hide_index=True)
 
     except Exception as exc:
         st.error(f"Could not render yearly counts: {exc}")
@@ -585,7 +585,7 @@ with tab4:
 
     display_df = build_download_df(filtered[selected_cols] if selected_cols else filtered)
 
-    st.dataframe(display_df, use_container_width=True, hide_index=True)
+    st.dataframe(display_df, width="stretch", hide_index=True)
 
     csv_bytes = display_df.to_csv(index=False).encode("utf-8")
     st.download_button(
@@ -795,7 +795,7 @@ with tab5:
             st.info("No comparison output is available for the current selection.")
         else:
             st.markdown("### Comparison table")
-            st.dataframe(compare_df, use_container_width=True, hide_index=True)
+            st.dataframe(compare_df, width="stretch", hide_index=True)
 
             csv_bytes = compare_df.to_csv(index=False).encode("utf-8")
             st.download_button(
@@ -849,7 +849,7 @@ with tab5:
                             title=f"{value_col} by {group_col}",
                         )
 
-                    st.plotly_chart(fig, use_container_width=True)
+                    st.plotly_chart(fig, width="stretch")
 
             elif chart_type == "Two-metric scatter":
                 metric_cols = [c for c in plottable_cols if c != "group_count"]
@@ -876,7 +876,7 @@ with tab5:
                         size_col=size_col,
                         title=f"{y_col} vs {x_col} by {group_col}",
                     )
-                    st.plotly_chart(fig, use_container_width=True)
+                    st.plotly_chart(fig, width="stretch")
 
             else:
                 # Raw distribution plots require a raw grouped dataframe
@@ -909,7 +909,7 @@ with tab5:
                             title=f"{metric_for_raw} by {raw_group_col_for_distribution}",
                         )
 
-                    st.plotly_chart(fig, use_container_width=True)
+                    st.plotly_chart(fig, width="stretch")
 
     except Exception as exc:
         st.error(f"Could not compute group comparison: {exc}")
