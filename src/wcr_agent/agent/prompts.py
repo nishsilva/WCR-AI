@@ -52,7 +52,13 @@ Intent categories:
 - death_year_counts
 - birth_vs_death_counts
 - compare_groups
+- regime_shift
 - fallback
+
+Use regime_shift when the user asks about:
+- regime shifts, structural breaks, or changepoints in ring formation rates
+- periods of high/low activity, step changes, or trend transitions in annual counts
+- whether ring formation patterns changed significantly over time
 
 When uncertain:
 - prefer a conservative interpretation
@@ -71,7 +77,7 @@ Return a JSON object with:
   ["summary", "map_births", "map_deaths", "map_segments",
    "lifetime_distribution", "area_distribution",
    "birth_year_counts", "death_year_counts", "birth_vs_death_counts",
-   "compare_groups", "fallback"]
+   "compare_groups", "regime_shift", "fallback"]
 - filters: object with zero or more supported filter arguments
 - comparison_mode: null or one of
   ["birth_region", "death_region", "record_status", "duplicate_flag",

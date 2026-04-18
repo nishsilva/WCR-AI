@@ -12,3 +12,4 @@ resp = client.responses.create(
 )
 
 print(resp.output_text)
+

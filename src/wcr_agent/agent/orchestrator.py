@@ -15,6 +15,7 @@ from wcr_agent.analysis.yearly_counts import (
     death_yearly_counts,
     compare_birth_vs_death_yearly_counts,
 )
+from wcr_agent.analysis.regime_shift import regime_shift_analysis
 from wcr_agent.plotting.distributions import (
     plot_histogram,
     plot_yearly_counts_bar,
@@ -25,6 +26,7 @@ from wcr_agent.plotting.maps import (
     plot_death_locations,
     plot_birth_to_death_segments,
 )
+from wcr_agent.plotting.regime_shift import plot_regime_shift
 
 filter_tool = get_tool("filter_rings")
 summarize_tool = get_tool("summarize_rings")
@@ -239,6 +241,42 @@ def _run_birth_vs_death_counts(parsed: ParsedQuery, subset: pd.DataFrame) -> Orc
     )
 
 
+def _run_regime_shift(parsed: ParsedQuery, subset: pd.DataFrame) -> OrchestratorResult:
+    result = regime_shift_analysis(subset, year_column="birth_year")
+
+    if not result.changepoint_years:
+        response_text = (
+            "No significant regime shifts detected in annual birth counts "
+            f"across **{len(result.counts_df)}** years of data. "
+            "The series appears statistically homogeneous."
+        )
+    else:
+        cp_str = ", ".join(str(y) for y in result.changepoint_years)
+        n_regimes = len(result.segments_df)
+        regime_lines = []
+        for _, row in result.segments_df.iterrows():
+            regime_lines.append(
+                f"- **Regime {int(row['regime'])}** ({int(row['start_year'])}–{int(row['end_year'])}): "
+                f"mean **{row['mean_count']}** rings/yr, {int(row['total_rings'])} total"
+            )
+        response_text = (
+            f"Detected **{len(result.changepoint_years)}** regime shift(s) at: **{cp_str}**. "
+            f"This divides the record into **{n_regimes}** activity regimes:\n\n"
+            + "\n".join(regime_lines)
+        )
+
+    fig = plot_regime_shift(result)
+
+    return OrchestratorResult(
+        intent="regime_shift",
+        response_text=response_text,
+        data=subset,
+        table=result.segments_df,
+        figure=fig,
+        filters_used=parsed.filters,
+    )
+
+
 def _run_fallback(parsed: ParsedQuery, subset: pd.DataFrame) -> OrchestratorResult:
     summary_payload = summarize_tool(subset)
     overview = summary_payload["summary"]["overview"]
@@ -317,6 +355,8 @@ def orchestrate_query(
         result = _run_death_year_counts(parsed, subset)
     elif parsed.intent == "birth_vs_death_counts":
         result = _run_birth_vs_death_counts(parsed, subset)
+    elif parsed.intent == "regime_shift":
+        result = _run_regime_shift(parsed, subset)
     else:
         result = _run_fallback(parsed, subset)
 

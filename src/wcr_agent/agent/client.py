@@ -145,6 +145,13 @@ class RuleBasedIntentParser(BaseIntentParser):
                 response_hint="show yearly absorption counts",
             )
 
+        if any(word in q for word in ["regime shift", "regime change", "changepoint", "structural break", "step change"]):
+            return ParsedQuery(
+                intent="regime_shift",
+                filters=filters,
+                response_hint="detect regime shifts in annual ring formation counts",
+            )
+
         if "birth" in q and "year" in q:
             return ParsedQuery(
                 intent="birth_year_counts",
@@ -252,6 +259,7 @@ class LLMIntentParser(BaseIntentParser):
                             "death_year_counts",
                             "birth_vs_death_counts",
                             "compare_groups",
+                            "regime_shift",
                             "fallback",
                         ],
                     },
