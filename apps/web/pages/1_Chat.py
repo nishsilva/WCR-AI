@@ -61,6 +61,9 @@ if "messages" not in st.session_state:
 if "last_result_df" not in st.session_state:
     st.session_state.last_result_df = None
 
+if "pending_regime_query" not in st.session_state:
+    st.session_state.pending_regime_query = None
+
 
 # -----------------------------------------------------------------------------
 # Helpers
@@ -117,6 +120,7 @@ with st.sidebar:
             }
         ]
         st.session_state.last_result_df = None
+        st.session_state.pending_regime_query = None
         st.rerun()
 
 
@@ -160,8 +164,24 @@ if user_prompt:
     with st.chat_message("user"):
         st.markdown(user_prompt)
 
+    # If we're waiting for a rolling window reply, extract the number and re-run the original query
+    active_query = user_prompt
+    if st.session_state.pending_regime_query is not None:
+        import re
+        m = re.search(r"\b(\d+)\b", user_prompt)
+        if m:
+            window = int(m.group(1))
+            active_query = f"{st.session_state.pending_regime_query} with {window}-year rolling mean"
+            st.session_state.pending_regime_query = None
+        else:
+            clarify_text = "I didn't catch a number — how many years for the rolling mean? (e.g. 5, 7, 10)"
+            add_message("assistant", clarify_text)
+            with st.chat_message("assistant"):
+                st.markdown(clarify_text)
+            st.stop()
+
     try:
-        result = orchestrate_query(user_prompt, df, use_llm_parser=True)
+        result = orchestrate_query(active_query, df, use_llm_parser=True)
         st.session_state.last_result_df = result.data
     except Exception as exc:
         error_text = f"I ran into an error while processing that request: `{exc}`"
@@ -169,6 +189,9 @@ if user_prompt:
         with st.chat_message("assistant"):
             st.markdown(error_text)
         st.stop()
+
+    if result.needs_clarification:
+        st.session_state.pending_regime_query = active_query
 
     assistant_text = result.response_text
     add_message("assistant", assistant_text)

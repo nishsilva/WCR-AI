@@ -43,6 +43,7 @@ class OrchestratorResult:
     extra_figure: Any = None
     note: Optional[str] = None
     filters_used: Optional[dict] = None
+    needs_clarification: bool = False
 
 
 def _run_comparison(parsed: ParsedQuery, subset: pd.DataFrame) -> OrchestratorResult:
@@ -242,7 +243,15 @@ def _run_birth_vs_death_counts(parsed: ParsedQuery, subset: pd.DataFrame) -> Orc
 
 
 def _run_regime_shift(parsed: ParsedQuery, subset: pd.DataFrame) -> OrchestratorResult:
-    result = regime_shift_analysis(subset, year_column="birth_year")
+    if not parsed.rolling_window_explicit:
+        return OrchestratorResult(
+            intent="regime_shift",
+            response_text="What rolling mean window would you like to use? (e.g. 5 years, 7 years)",
+            needs_clarification=True,
+            filters_used=parsed.filters,
+        )
+
+    result = regime_shift_analysis(subset, year_column="birth_year", rolling_window=parsed.rolling_window)
 
     if not result.changepoint_years:
         response_text = (

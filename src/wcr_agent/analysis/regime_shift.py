@@ -17,6 +17,7 @@ class RegimeShiftResult:
     changepoint_years: list[int]
     segments_df: pd.DataFrame
     rolling_mean: pd.Series
+    rolling_window: int
     year_column: str
 
 
@@ -103,6 +104,7 @@ def regime_shift_analysis(
             changepoint_years=[],
             segments_df=pd.DataFrame(columns=["regime", "start_year", "end_year", "mean_count", "total_rings", "n_years"]),
             rolling_mean=pd.Series(dtype=float),
+            rolling_window=rolling_window,
             year_column=year_column,
         )
 
@@ -142,5 +144,6 @@ def regime_shift_analysis(
         changepoint_years=changepoint_years,
         segments_df=segments_df,
         rolling_mean=rolling_mean,
+        rolling_window=rolling_window,
         year_column=year_column,
     )

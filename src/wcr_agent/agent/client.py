@@ -27,6 +27,8 @@ class ParsedQuery:
     metric: str | None = None
     custom_group_col: str | None = None
     response_hint: str | None = None
+    rolling_window: int = 5
+    rolling_window_explicit: bool = False
 
 
 class BaseIntentParser:
@@ -146,9 +148,12 @@ class RuleBasedIntentParser(BaseIntentParser):
             )
 
         if any(word in q for word in ["regime shift", "regime change", "changepoint", "structural break", "step change"]):
+            window = self._detect_rolling_window(q)
             return ParsedQuery(
                 intent="regime_shift",
                 filters=filters,
+                rolling_window=window,
+                rolling_window_explicit=window != 5 or any(w in q for w in ["rolling", "window", "mean"]),
                 response_hint="detect regime shifts in annual ring formation counts",
             )
 
@@ -210,6 +215,23 @@ class RuleBasedIntentParser(BaseIntentParser):
             filters["min_area_km2"] = 50000
 
         return filters
+
+    def _detect_rolling_window(self, text: str) -> int:
+        import re
+        # Match patterns like "7-year rolling", "10 year window", "rolling mean of 8", "window of 12"
+        for pattern in [
+            r"(\d+)[- ]year(?:s)?\s+rolling",
+            r"rolling[^0-9]*(\d+)[- ]year",
+            r"rolling\s+(?:mean|window)\s+(?:of\s+)?(\d+)",
+            r"window\s+(?:of\s+)?(\d+)",
+            r"(\d+)[- ]yr\s+rolling",
+        ]:
+            m = re.search(pattern, text)
+            if m:
+                val = int(m.group(1))
+                if 2 <= val <= 20:
+                    return val
+        return 5
 
     def _detect_metric(self, text: str) -> str:
         if "lifetime" in text:
@@ -361,6 +383,12 @@ class LLMIntentParser(BaseIntentParser):
                             {"type": "null"},
                         ]
                     },
+                    "rolling_window": {
+                        "anyOf": [
+                            {"type": "integer"},
+                            {"type": "null"},
+                        ]
+                    },
                 },
                 "required": [
                     "intent",
@@ -369,6 +397,7 @@ class LLMIntentParser(BaseIntentParser):
                     "metric",
                     "custom_group_col",
                     "response_hint",
+                    "rolling_window",
                 ],
             },
             "strict": True,
@@ -422,6 +451,9 @@ class LLMIntentParser(BaseIntentParser):
         metric = parsed.get("metric")
         custom_group_col = parsed.get("custom_group_col")
         response_hint = parsed.get("response_hint")
+        raw_window = parsed.get("rolling_window")
+        rolling_window_explicit = raw_window is not None and 2 <= int(raw_window) <= 20
+        rolling_window = int(raw_window) if rolling_window_explicit else 5
 
         filters = {
             k: v for k, v in filters.items()
@@ -444,6 +476,8 @@ class LLMIntentParser(BaseIntentParser):
             metric=metric,
             custom_group_col=custom_group_col,
             response_hint=response_hint,
+            rolling_window=rolling_window,
+            rolling_window_explicit=rolling_window_explicit,
         )
 
 

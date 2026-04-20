@@ -65,7 +65,7 @@ def plot_regime_shift(
                 x=result.rolling_mean.index.tolist(),
                 y=result.rolling_mean.tolist(),
                 mode="lines",
-                name="5-yr rolling mean",
+                name=f"{result.rolling_window}-yr rolling mean",
                 line=dict(color="rgba(50, 50, 50, 0.8)", width=2, dash="dot"),
             )
         )
